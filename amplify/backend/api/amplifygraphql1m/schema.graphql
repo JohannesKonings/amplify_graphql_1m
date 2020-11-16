@@ -1,0 +1,24 @@
+type Block
+  @model{
+  id: ID! @function(name: "idResolver-${env}")
+  tasks: [Task] @connection(keyName: "byBlockId", fields: ["id"])
+}
+
+type Task
+  @model
+  @key(name: "byBlockId", fields: ["blockId"], queryField: "tasksByBlockId") {
+    
+  id: ID! @function(name: "idResolver-${env}")
+  blockId: ID
+  title: String
+}
+
+input CreateTodoInput {
+  id: ID! @function(name: "idResolver-${env}")
+  blockId: ID
+  title: String
+}
+
+type Mutation {
+  batchAddTasks(tasks: [CreateTodoInput]): [Task]
+}
